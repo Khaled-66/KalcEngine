@@ -1,0 +1,6 @@
+2 + 2
+.mode scientific
+sin(0)
+.mode programmer
+0xFF & 0x0F
+.exit
