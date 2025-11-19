@@ -9,7 +9,7 @@ else:
     sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
     from kalc_engine.evaluator import Evaluator, EvalError
 
-
+## it was a main update lmao
 def main() -> None:
     """Interactive REPL for calculator."""
     ev = Evaluator()
