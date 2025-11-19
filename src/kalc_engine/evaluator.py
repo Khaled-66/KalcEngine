@@ -3,15 +3,16 @@ import re
 from typing import List, Tuple, Union
 
 Token = Tuple[str, str]  # (type, value)
-
 class EvalError(Exception):
     pass
 ## nothing
 class Evaluator:
+    # instead of parsing and executing every single time, we parse and execute only 1 time to avoid wasting time and memory
     NUMBER_RE = re.compile(r"^0[bB][01]+|^0[oO][0-7]+|^0[xX][0-9a-fA-F]+|^\d*\.?\d+(?:[eE][+-]?\d+)?")
     IDENT_RE = re.compile(r"^[A-Za-z_]\w*")
 
     def __init__(self):
+        # Define supported functions and operators
         self.functions = {
             'sin': math.sin,
             'cos': math.cos,
@@ -44,26 +45,25 @@ class Evaluator:
         }
 
     def tokenize(self, expr: str) -> List[Token]:
-        s = expr.replace(' ', '')  
+        # i had 2 options:-
+        # 1st one to check if the char is "a space "or not "absultely headache for me tbh"
+        # 2nd one to just remove all spaces at once "easier"
+        s = expr.replace(' ', '')
         i = 0
         tokens: List[Token] = []
         while i < len(s):
             ch = s[i]
             # size>1 operators
-            if s.startswith('**', i):
-                tokens.append(('OP', '**'))
-                i += 2
-                continue
-            if s.startswith('<<', i) or s.startswith('>>', i):
+            if s.startswith ('**', i) or s.startswith('<<', i) or s.startswith('>>', i):
                 tokens.append(('OP', s[i:i+2]))
                 i += 2
                 continue
-            # ssize=1 ops
+            # size=1 operators
             if ch in '()+-*/%^~,&|<>':
                 tokens.append(('OP', ch))
                 i += 1
                 continue
-            # num
+            # numbers
             m = self.NUMBER_RE.match(s[i:])
             if m:
                 val = m.group(0)
